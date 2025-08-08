@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Earn</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #0a1a2e, #1a2e44);
+            color: #fff;
+            overflow: hidden;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 215, 0, 0.3);
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            position: relative;
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            overflow: hidden;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        #gameName {
+            color: #ffd700;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        #score {
+            color: #c0c0c0; /* Silver for luxury */
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(192, 192, 192, 0.8), 0 0 20px rgba(192, 192, 192, 0.5);
+        }
+        #homeScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            height: 100%;
+        }
+        #logo {
+            background: linear-gradient(45deg, #2e4057, #1a2a44);
+            color: #ffd700;
+            border-radius: 50%;
+            width: 250px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: circularMotion 3s ease-in-out forwards;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.3);
+            border: 4px solid #ffd700;
+            z-index: 10;
+        }
+        #logo::before {
+            content: "💡";
+            position: absolute;
+            top: 30px;
+            font-size: 2.2em;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+        }
+        #logo::after {
+            content: "🧠";
+            position: absolute;
+            bottom: 30px;
+            font-size: 2.2em;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+        }
+        #logo span {
+            font-size: 2.8em;
+            font-weight: bold;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 1), 0 0 40px rgba(255, 215, 0, 0.7);
+        }
+        #gameTitle {
+            font-size: 1.8em;
+            color: #ffd700;
+            margin-top: 280px; /* Adjusted for larger logo */
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        #timer {
+            font-size: 1.6em;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.8), 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+        #question {
+            font-size: 2em;
+            margin-bottom: 35px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        .options {
+            display: grid;
+            gap: 25px;
+        }
+        button {
+            padding: 20px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background: linear-gradient(45deg, #3d5a80, #34495e);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        button.correct {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+        }
+        button.incorrect {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        button:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+        }
+        #nextBtn {
+            margin-top: 35px;
+            background: linear-gradient(45deg, #ffd700, #f1c40f);
+            padding: 18px 35px;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+        #nextBtn:hover {
+            background: linear-gradient(45deg, #e67e22, #d35400);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 30px 40px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        #gameScreen {
+            display: none;
+        }
+        @keyframes circularMotion {
+            0% { 
+                opacity: 0;
+                transform: translate(-50%, -50%) rotate(0deg) scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -60%) rotate(180deg) scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) rotate(360deg) scale(1);
+                display: none;
+            }
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+            #gameName {
+                font-size: 1.5em;
+            }
+            #score {
+                font-size: 1.2em;
+            }
+            #logo {
+                width: 180px;
+                height: 180px;
+            }
+            #logo span {
+                font-size: 2em;
+            }
+            #gameTitle {
+                font-size: 1.3em;
+                margin-top: 200px;
+            }
+            #question {
+                font-size: 1.5em;
+            }
+            button {
+                padding: 15px;
+                font-size: 1.1em;
+            }
+            .popup {
+                font-size: 1.3em;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="homeScreen">
+            <div id="logo"><span>Quiz Earn</span></div>
+            <div id="gameTitle">Quiz Earn</div>
+        </div>
+        <div id="gameScreen">
+            <div class="header">
+                <div id="gameName">Quiz Earn</div>
+                <div id="score">Score: 0.00</div>
+            </div>
+            <div id="timer">Time Left: 20s</div>
+            <div id="question"></div>
+            <div class="options" id="options"></div>
+            <button id="nextBtn">Next</button>
+        </div>
+    </div>
+    <div id="popup" class="popup"></div>
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 20;
+        let timer;
+        let answered = false;
+
+        const homeScreen = document.getElementById('homeScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const timerEl = document.getElementById('timer');
+        const scoreEl = document.getElementById('score');
+        const nextBtn = document.getElementById('nextBtn');
+        const popupEl = document.getElementById('popup');
+
+        // Start game automatically after logo animation
+        setTimeout(startGame, 3000); // Delay of 3 seconds to match animation
+
+        function startGame() {
+            currentQuestion = 0;
+            score = 0;
+            updateScore();
+            homeScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            generateQuestion();
+        }
+
+        function startTimer() {
+            timeLeft = 20;
+            timerEl.textContent = `Time Left: ${timeLeft}s`;
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `Time Left: ${timeLeft}s`;
+                if (timeLeft <= 0 && !answered) {
+                    clearInterval(timer);
+                    showPopup('Time Up!');
+                    nextBtn.textContent = 'Try Next';
+                    nextBtn.style.display = 'block';
+                    disableOptions();
+                }
+            }, 1000);
+        }
+
+        function updateScore() {
+            scoreEl.textContent = `Score: ${score.toFixed(2)}`;
+        }
+
+        function generateQuestion() {
+            answered = false;
+            const num1 = Math.floor(Math.random() * 20) + 1; // Random numbers 1-20
+            const num2 = Math.floor(Math.random() * 20) + 1;
+            const correctAnswer = num1 + num2;
+            const options = [correctAnswer];
+            while (options.length < 4) {
+                const wrongAnswer = correctAnswer + (Math.floor(Math.random() * 10) - 5); // Random variation
+                if (wrongAnswer !== correctAnswer && !options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+            }
+            options.sort(() => Math.random() - 0.5); // Shuffle options
+
+            questionEl.textContent = `${num1} + ${num2} = ?`;
+            optionsEl.innerHTML = '';
+            nextBtn.style.display = 'none';
+            popupEl.style.display = 'none';
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.textContent = option;
+                btn.addEventListener('click', () => checkAnswer(option, correctAnswer));
+                optionsEl.appendChild(btn);
+            });
+            startTimer();
+        }
+
+        function checkAnswer(selected, correctAnswer) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timer);
+            const buttons = optionsEl.getElementsByTagName('button');
+            for (let btn of buttons) {
+                btn.disabled = true;
+                if (parseInt(btn.textContent) === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+                if (parseInt(btn.textContent) === selected) {
+                    if (selected === correctAnswer) {
+                        btn.classList.add('correct');
+                        score += 0.02;
+                        updateScore();
+                        showPopup('Correct Answer');
+                        nextBtn.textContent = 'Next Question';
+                    } else {
+                        btn.classList.add('incorrect');
+                        showPopup('Wrong Answer');
+                        nextBtn.textContent = 'Try Next';
+                    }
+                }
+            }
+            nextBtn.style.display = 'block';
+        }
+
+        function showPopup(message) {
+            popupEl.textContent = message;
+            popupEl.style.display = 'block';
+            setTimeout(() => {
+                popupEl.style.display = 'none';
+            }, 2000);
+        }
+
+        function disableOptions() {
+            const buttons = optionsEl.getElementsByTagName('button');
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            generateQuestion(); // Generate new question indefinitely
+        });
+    </script>
+</body>
+</html>
